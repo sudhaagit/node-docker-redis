@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "node-docker-redis": "file:.."
+     }
+}

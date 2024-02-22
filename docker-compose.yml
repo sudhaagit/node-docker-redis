@@ -13,7 +13,7 @@ services:
     container_name: api
     restart: unless-stopped
     network_mode: bridge
-    command: /bin/sh -c 'nodemon -e js,html index.js'
+    command: /bin/sh -c 'nodemon -e js,html server.js'
     ports:
       - 8080:9000
     volumes:

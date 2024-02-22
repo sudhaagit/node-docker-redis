@@ -6,4 +6,4 @@ ADD package*.json ./
 RUN yarn install
 COPY . .
 
-CMD ["node", "index.js"]
+CMD ["node", "server.js"]
