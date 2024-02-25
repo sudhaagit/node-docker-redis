@@ -1,5 +1,5 @@
 const express = require('express')
-
+const axios = require('axios')
 const redis = require('redis')
 const cors = require('cors')
 const app = express()
@@ -55,7 +55,7 @@ client.on("error", (error) => console.error(error))
 app.get('/api/v1/news/:us', (req, res) => {
   try {
     const us = req.params.us;
-    if (us === 'us') {
+    if (us == 'us') {
       client.get(us, async (err, cache_data) => {
 
         if (cache_data) {
@@ -76,7 +76,7 @@ app.get('/api/v1/news/:us', (req, res) => {
           })
         }
       })
-    } else if (us === 'usmore') {
+    } else if (us == 'usmore') {
       client.get(us, async (err, cache_data) => {
         if (cache_data) {
           const parsedata = JSON.parse(cache_data)
@@ -96,7 +96,7 @@ app.get('/api/v1/news/:us', (req, res) => {
           })
         }
       })
-    } else if (us === 'tech') {
+    } else if (us == 'tech') {
       client.get(us, async (err, cache_data) => {
         if (cache_data) {
           const parsedata = JSON.parse(cache_data)
@@ -116,7 +116,7 @@ app.get('/api/v1/news/:us', (req, res) => {
           })
         }
       })
-    } else if (us === 'techmore') {
+    } else if (us == 'techmore') {
       client.get(us, async (err, cache_data) => {
         if (cache_data) {
           const parsedata = JSON.parse(cache_data)
