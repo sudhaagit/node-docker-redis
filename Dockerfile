@@ -5,5 +5,4 @@ WORKDIR /src
 ADD package*.json ./
 RUN yarn install
 COPY . .
-
 CMD ["node", "server.js"]

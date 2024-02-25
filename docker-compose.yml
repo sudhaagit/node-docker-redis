@@ -16,6 +16,7 @@ services:
     command: /bin/sh -c 'nodemon -e js,html server.js'
     ports:
       - 8080:9000
+
     volumes:
       - .:/src
       - /src/node_modules
@@ -24,3 +25,16 @@ services:
     #   REDIS_URL: redis://cache
     links:
       - redis
+
+  sendmail:
+    build: .
+    container_name: sendmail
+    restart: unless-stopped
+    network_mode: bridge
+    command: /bin/sh -c 'nodemon -e js,html server-sendmail.js'
+    ports:
+      - 3001:3001
+
+    volumes:
+      - .:/src
+      - /src/node_modules
