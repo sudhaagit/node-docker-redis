@@ -2,20 +2,30 @@ version: '3.7'
 services:
   redis:
     image: redis:6.2-alpine
-    container_name: redis
+    container_name: redis-container
     restart: unless-stopped
     network_mode: bridge
+    ports:
+      - "6379:6379"
     expose:
       - 6379
+    volumes:
+      - /src/redis.conf:/tmp/redis.conf
 
   api:
     build: .
+    image: node-docker-redis-api:latest
     container_name: api
     restart: unless-stopped
     network_mode: bridge
     command: /bin/sh -c 'nodemon -e js,html server.js'
     ports:
-      - 8080:9000
+      - "8080:9000"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
 
     volumes:
       - .:/src
@@ -28,12 +38,18 @@ services:
 
   sendmail:
     build: .
+    image: node-docker-redis-sendmail:latest
     container_name: sendmail
     restart: unless-stopped
     network_mode: bridge
     command: /bin/sh -c 'nodemon -e js,html server-sendmail.js'
     ports:
-      - 3001:3001
+      - "3001:3001"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
 
     volumes:
       - .:/src

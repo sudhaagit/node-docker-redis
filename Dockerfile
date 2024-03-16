@@ -5,4 +5,5 @@ WORKDIR /src
 ADD package*.json ./
 RUN yarn install
 COPY . .
-CMD ["node", "server.js"]
+# Command to run when the container starts
+CMD ["npm", "run", "start:both"]

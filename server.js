@@ -7,7 +7,10 @@ const app = express()
 const PORT = process.env.PORT || 9000 // Redis Api
 
 const REDIS_PORT = process.env.REDIS_PORT || 6379
-const client = redis.createClient(REDIS_PORT)
+const client = redis.createClient({
+  host: 'redis',
+  port: 6379
+})
 app.use(cors())
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
@@ -55,7 +58,7 @@ client.on("error", (error) => console.error(error))
 app.get('/api/v1/news/:us', (req, res) => {
   try {
     const us = req.params.us;
-    if (us == 'us') {
+    if (us === 'us') {
       client.get(us, async (err, cache_data) => {
 
         if (cache_data) {
@@ -76,7 +79,7 @@ app.get('/api/v1/news/:us', (req, res) => {
           })
         }
       })
-    } else if (us == 'usmore') {
+    } else if (us === 'usmore') {
       client.get(us, async (err, cache_data) => {
         if (cache_data) {
           const parsedata = JSON.parse(cache_data)
@@ -96,7 +99,7 @@ app.get('/api/v1/news/:us', (req, res) => {
           })
         }
       })
-    } else if (us == 'tech') {
+    } else if (us === 'tech') {
       client.get(us, async (err, cache_data) => {
         if (cache_data) {
           const parsedata = JSON.parse(cache_data)
@@ -116,7 +119,7 @@ app.get('/api/v1/news/:us', (req, res) => {
           })
         }
       })
-    } else if (us == 'techmore') {
+    } else if (us === 'techmore') {
       client.get(us, async (err, cache_data) => {
         if (cache_data) {
           const parsedata = JSON.parse(cache_data)
@@ -132,6 +135,46 @@ app.get('/api/v1/news/:us', (req, res) => {
           client.setex(us, 1440, JSON.stringify(api.data))
           return res.status(200).send({
             message: `Retrieved Tech-more data from the server`,
+            users: api.data
+          })
+        }
+      })
+    } else if (us === 'india') {
+      client.get(us, async (err, cache_data) => {
+        if (cache_data) {
+          const parsedata = JSON.parse(cache_data)
+          //console.log('get values  ' + parsedata[0]['email'])
+          //console.log('get values  ' + parsedata.articles[0].author)
+          return res.status(200).send({
+            message: `Retrieved Tech data from the cache`,
+            users: JSON.parse(cache_data)
+
+          })
+        } else {
+          const api = await axios.get(`https://newsapi.org/v2/top-headlines?country=in&pageSize=10&page=1&apiKey=4463400343c94307a995ef39858caaaf`)
+          client.setex(us, 1440, JSON.stringify(api.data))
+          return res.status(200).send({
+            message: `Retrieved India data from the server`,
+            users: api.data
+          })
+        }
+      })
+    } else if (us === 'indiamore') {
+      client.get(us, async (err, cache_data) => {
+        if (cache_data) {
+          const parsedata = JSON.parse(cache_data)
+          //console.log('get values  ' + parsedata[0]['email'])
+          //console.log('get values  ' + parsedata.articles[0].author)
+          return res.status(200).send({
+            message: `Retrieved India-more data from the cache`,
+            users: JSON.parse(cache_data)
+
+          })
+        } else {
+          const api = await axios.get(`https://newsapi.org/v2/top-headlines?country=in&pageSize=10&page=2&apiKey=4463400343c94307a995ef39858caaaf`)
+          client.setex(us, 1440, JSON.stringify(api.data))
+          return res.status(200).send({
+            message: `Retrieved India-more data from the server`,
             users: api.data
           })
         }
@@ -178,7 +221,7 @@ app.get('/api/v1/news/:us', (req, res) => {
 // app1.listen(PORT1, () => {
 //   console.log(`EmailServer running on port ${PORT1}`);
 // });
-app.listen(PORT, () => console.log(`RedisServer running on port ${PORT}`))
+app.listen(PORT, () => console.log(`Server API running on port ${PORT}`))
 
 module.exports = app;
 
